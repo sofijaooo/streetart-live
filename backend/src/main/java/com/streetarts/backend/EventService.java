@@ -10,6 +10,8 @@ import java.time.LocalTime;
 import java.util.stream.Collectors;
 
 import com.streetarts.backend.dto.EventMapDto;
+import com.streetarts.backend.dto.EventListDto;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -17,13 +19,24 @@ public class EventService {
     private final EventRepository repository;
     private final DataSource dataSource;
     private final GeocodingService geocodingService;
+    private final ArtistRepository artistRepository;
+
+//    public EventService(EventRepository repository,
+//                        DataSource dataSource,
+//                        GeocodingService geocodingService) {
+//        this.repository = repository;
+//        this.dataSource = dataSource;
+//        this.geocodingService = geocodingService;
+//    }
 
     public EventService(EventRepository repository,
                         DataSource dataSource,
-                        GeocodingService geocodingService) {
+                        GeocodingService geocodingService,
+                        ArtistRepository artistRepository) {
         this.repository = repository;
         this.dataSource = dataSource;
         this.geocodingService = geocodingService;
+        this.artistRepository = artistRepository;
     }
 
     // поиск по месту
@@ -94,6 +107,31 @@ public class EventService {
             dto.setTime(event.getTime() != null ? event.getTime().toString() : "");
             dto.setLatitude(event.getLatitude());
             dto.setLongitude(event.getLongitude());
+            return dto;
+        }).toList();
+    }
+
+    public List<EventListDto> searchEventsWithArtists(String search, String date, String time) {
+        List<Event> events = searchEvents(search, date, time);
+
+        return events.stream().map(event -> {
+            EventListDto dto = new EventListDto();
+            dto.setId(event.getId());
+            dto.setUserId(event.getUserId());
+            dto.setPlace(event.getPlace());
+            dto.setEventDate(event.getEventDate() != null ? event.getEventDate().toString() : "");
+            dto.setTime(event.getTime() != null ? event.getTime().toString() : "");
+
+            Optional<Artists> artistOpt = artistRepository.findByUserId(event.getUserId());
+            if (artistOpt.isPresent()) {
+                Artists artist = artistOpt.get();
+                dto.setNickname(artist.getNickname());
+                dto.setAvatarUrl(artist.getAvatar_url());
+            } else {
+                dto.setNickname("Невідомий виконавець");
+                dto.setAvatarUrl("");
+            }
+
             return dto;
         }).toList();
     }

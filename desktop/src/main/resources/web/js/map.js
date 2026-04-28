@@ -10,9 +10,9 @@ toggle.addEventListener("change", () => {
     );
 });
 
-
-const toggle = document.getElementById("mapThemeToggle");
-const frame = document.getElementById("mapFrame");
+//
+// const toggle = document.getElementById("mapThemeToggle");
+// const frame = document.getElementById("mapFrame");
 
 function sendTheme() {
     const theme = toggle.checked ? "light" : "dark";

@@ -4,6 +4,7 @@ package com.streetarts.backend;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ArtistRepository extends JpaRepository<Artists, Long> {
 
@@ -16,4 +17,6 @@ public interface ArtistRepository extends JpaRepository<Artists, Long> {
     List<Artists> findByGenreAndCityContainingIgnoreCase(GenreRole genre, String city);
 
     List<Artists> findByNicknameContainingIgnoreCaseOrCityContainingIgnoreCase(String nickname, String city);
+
+    Optional<Artists> findByUserId(Integer userId);
 }

@@ -1,156 +1,23 @@
-.filters { display:flex; gap:12px; align-items:center; }
-
-.chip {
-    padding: 6px 14px;
-    border-radius: 12px;
-    border: none;
-    background: #b5adad;
-    cursor: pointer;
-    font: inherit;
-}
-
-.picker { position: relative; }
-
-.popover {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    z-index: 20;
-}
-
-.cal {
-    width: 280px;
-    border-radius: 14px;
-    background: #fff;
-    padding: 12px;
-    box-shadow: 0 12px 30px rgba(0,0,0,.18);
-}
-
-.cal__head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.cal__nav { border:none; background:#eee; border-radius:10px; padding:6px 10px; cursor:pointer; }
-.cal__title { font-weight:600; }
-
-.cal__dow, .cal__grid { display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; }
-.cal__dow span { text-align:center; font-size:12px; opacity:.7; }
-
-.cal__cell {
-    border: none;
-    background: #f2f2f2;
-    border-radius: 10px;
-    padding: 8px 0;
-    cursor: pointer;
-}
-.cal__cell--empty { background: transparent; }
-.cal__cell.is-selected { background: #b5adad; color: #000; }
-
-.cal__actions { display:flex; justify-content:space-between; margin-top:10px; }
-.cal__btn { border:none; background:#eee; border-radius:10px; padding:8px 10px; cursor:pointer; }
-.cal__btn--primary { background:#b5adad; }
-
-/*event card*/
-.event-card {
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(6px);
-
-    border-radius: 14px;
-    padding: 16px 18px;
-
-    border: 1px solid rgba(255,255,255,0.08);
-
-    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-
-    /*max-width: 600px;*/
-    margin-bottom: 16px;
-    /*font-family: sans-serif;*/
-
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* строки */
-.event-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
-/* верх */
-.event-date-time {
-    display: flex;
-    gap: 12px;
-    font-weight: 700;
-    font-size: 16px;
-}
-
-/* низ */
-.event-user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-}
-
-.event-avatar {
-    width: 38px;
-    height: 38px;
-    background: #d9d9d9;
-    border-radius: 50%;
-}
-
-.event-username {
-    font-size: 15px;
-    color: #222;
-}
-
-/* адрес — ключевой блок */
-.event-place {
-    font-size: 14px;
-    color: #333;
-    text-align: right;
-    line-height: 1.3;
-
-    max-width: 60%;
-
-    word-break: break-word;
-    overflow-wrap: anywhere;
-}
-
-/* кнопка */
-.event-btn {
-    background: #9b9090;
-    color: #fff;
-    border: none;
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-size: 13px;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: 0.2s;
-}
-
-.event-btn:hover {
-    background: #7f7575;
-}
-#eventsList{
-    width: 100%;
-}
-
-/* ===== page layout ===== */
+/* ===== events page local overrides ===== */
 
 .content {
     width: 100%;
-    max-width: 980px;
+    max-width: 1040px;
     margin: 0 auto;
-    padding-top: 36px;
-    text-align: left;
+    padding: 36px 36px 80px;
+    display: flex;
+    flex-direction: column;
     align-items: stretch;
+    text-align: left;
+    gap: 18px;
 }
 
 .content h1 {
+    margin: 0 0 8px;
     text-align: center;
-    margin-bottom: 28px;
+    color: #ffffff;
+    font-size: clamp(28px, 2vw, 34px);
+    line-height: 1.2;
 }
 
 /* ===== helpers ===== */
@@ -179,17 +46,19 @@
 
 .control-input {
     width: 100%;
-    max-width: 420px;
-    min-height: 44px;
+    max-width: 460px;
+    min-height: 46px;
     padding: 12px 14px;
-    border-radius: 12px;
+    border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.05);
-    color: #ffffff;
     font: inherit;
     outline: none;
     backdrop-filter: blur(6px);
     transition: 0.2s ease;
+    background: rgba(255,255,255,0.05) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff;
+
 }
 
 .control-input::placeholder {
@@ -208,18 +77,29 @@
 
 /* ===== filters ===== */
 
+.filters-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
 .filters {
     display: flex;
-    gap: 12px;
     align-items: center;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
+.picker {
+    position: relative;
+    flex-shrink: 0;
+}
+
 .chip,
-select {
-    min-height: 42px;
+#timeFilter {
+    min-height: 44px;
     padding: 10px 14px;
-    border-radius: 12px;
+    border-radius: 14px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.05);
     color: #f3f3f3;
@@ -230,28 +110,37 @@ select {
 }
 
 .chip:hover,
-select:hover {
+#timeFilter:hover {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 255, 255, 0.12);
 }
 
 .chip:focus,
-select:focus {
+#timeFilter:focus,
+#filterBtn:focus {
     outline: none;
     border-color: rgba(255, 29, 0, 0.45);
     box-shadow: 0 0 0 3px rgba(255, 29, 0, 0.14);
 }
 
-select {
+#timeFilter {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    border-radius: 14px;
+    padding: 10px 14px;
+
     appearance: none;
-    min-width: 140px;
-}
+    -webkit-appearance: none;
+    -moz-appearance: none;
 
+    cursor: pointer;
+}
+#timeFilter {
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='10' viewBox='0 0 24 24'><path d='M7 10l5 5 5-5z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+}
 /* ===== date picker ===== */
-
-.picker {
-    position: relative;
-}
 
 .popover {
     position: absolute;
@@ -372,16 +261,16 @@ select {
 /* ===== main filter button ===== */
 
 #filterBtn {
-    margin-top: 16px;
+    align-self: flex-start;
     min-width: 260px;
-    width: auto;
+    margin-top: 2px;
 }
 
-/* ===== events list ===== */
+/* ===== list ===== */
 
 #eventsList {
     width: 100%;
-    margin-top: 24px;
+    margin-top: 12px;
 }
 
 /* ===== event card ===== */
@@ -389,7 +278,7 @@ select {
 .event-card {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(10px);
-    border-radius: 18px;
+    border-radius: 22px;
     padding: 18px 20px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
@@ -410,7 +299,7 @@ select {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
 }
 
 .event-row-top {
@@ -430,18 +319,18 @@ select {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-shrink: 0;
     min-width: 0;
+    flex-shrink: 0;
 }
 
 .event-avatar {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     background: rgba(255, 255, 255, 0.12);
     border-radius: 50%;
-    flex-shrink: 0;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.08);
+    flex-shrink: 0;
 }
 
 .event-avatar img {
@@ -455,6 +344,7 @@ select {
     font-size: 14px;
     color: #f1f1f1;
     font-weight: 500;
+    line-height: 1.35;
 }
 
 .event-place {
@@ -472,7 +362,7 @@ select {
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 9px 14px;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 13px;
     font-family: inherit;
     cursor: pointer;
@@ -498,6 +388,7 @@ select {
 @media (max-width: 768px) {
     .content {
         max-width: 100%;
+        padding: 26px 18px 56px;
     }
 
     .control-input {
@@ -505,14 +396,12 @@ select {
     }
 
     .filters {
-        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .chip,
-    select {
-        width: 100%;
-    }
-
+    #timeFilter,
     #filterBtn {
         width: 100%;
         min-width: 0;
@@ -541,4 +430,252 @@ select {
     .cal {
         width: 280px;
     }
+}
+
+/* ===== hard overrides for WebView/native controls ===== */
+
+.content .control-input {
+    background: #1b1f2a !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03) !important;
+    caret-color: #ffffff;
+}
+
+.content .control-input::placeholder {
+    color: #9ea3ad !important;
+    -webkit-text-fill-color: #9ea3ad !important;
+}
+
+.content .control-input:focus {
+    background: #1b1f2a !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border-color: rgba(255, 29, 0, 0.45) !important;
+    box-shadow:
+            0 0 0 3px rgba(255, 29, 0, 0.14),
+            inset 0 0 0 1px rgba(255,255,255,0.03) !important;
+}
+
+/* box of the time select */
+.content #timeFilter {
+    min-height: 44px;
+    padding: 10px 42px 10px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    background-color: #1b1f2a !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    cursor: pointer;
+
+    background-image:
+            linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03)),
+            url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat, no-repeat;
+    background-position: 0 0, right 14px center;
+    background-size: auto, 14px;
+}
+
+.content #timeFilter:focus {
+    border-color: rgba(255, 29, 0, 0.45) !important;
+    box-shadow:
+            0 0 0 3px rgba(255, 29, 0, 0.14),
+            inset 0 0 0 1px rgba(255,255,255,0.03) !important;
+    outline: none;
+}
+
+/* options: works only partially depending on WebView/browser */
+.content #timeFilter option {
+    background: #1b1f2a;
+    color: #ffffff;
+}
+
+
+/* ===== hard override for search input in WebView ===== */
+
+.content .control-input {
+    background: #1b1f2a !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.10) !important;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03) !important;
+    caret-color: #ffffff;
+}
+
+.content .control-input::placeholder {
+    color: #9ea3ad !important;
+    -webkit-text-fill-color: #9ea3ad !important;
+}
+
+.content .control-input:focus {
+    background: #1b1f2a !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    border-color: rgba(255, 29, 0, 0.45) !important;
+    box-shadow:
+            0 0 0 3px rgba(255, 29, 0, 0.14),
+            inset 0 0 0 1px rgba(255,255,255,0.03) !important;
+}
+
+/* ===== time picker ===== */
+
+.time-panel {
+    width: 320px;
+    border-radius: 18px;
+    background: #181a20;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.38);
+    color: #f3f3f3;
+    backdrop-filter: blur(12px);
+}
+
+.time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.time-option {
+    min-height: 40px;
+    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    color: #f5f5f5;
+    border-radius: 10px;
+    padding: 9px 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    font: inherit;
+    text-align: center;
+}
+
+.time-option:hover {
+    background: rgba(255, 255, 255, 0.10);
+}
+
+.time-option.is-selected {
+    background: linear-gradient(135deg, #ff1d00, rgba(255, 0, 0, 0.6));
+    color: #ffffff;
+    box-shadow: 0 8px 18px rgba(255, 29, 0, 0.28);
+}
+
+@media (max-width: 768px) {
+    .time-panel {
+        width: 280px;
+    }
+
+    .time-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.search-block {
+    width: 100%;
+    max-width: 460px;
+}
+
+.control-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #f3f3f3;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.control-input-shell {
+    width: 100%;
+    min-height: 48px;
+    border-radius: 16px;
+    background: #1b1f2a;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    transition: 0.2s ease;
+}
+
+.control-input-shell:focus-within {
+    border-color: rgba(255, 29, 0, 0.45);
+    box-shadow:
+            0 0 0 3px rgba(255, 29, 0, 0.14),
+            inset 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+.control-input {
+    width: 100%;
+    min-height: 46px;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff;
+
+    font: inherit;
+
+    margin: 0;
+}
+
+.control-input::placeholder {
+    color: #9ea3ad !important;
+    -webkit-text-fill-color: #9ea3ad !important;
+    opacity: 1;
+}
+
+/* убираем дефолтные search-декорации */
+.control-input::-webkit-search-decoration,
+.control-input::-webkit-search-cancel-button,
+.control-input::-webkit-search-results-button,
+.control-input::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+    display: none;
+}
+
+
+.control-input {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    caret-color: #000000;
+}
+
+.control-input::placeholder {
+    color: #888888 !important;
+    -webkit-text-fill-color: #888888 !important;
+}
+
+input#search {
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+}
+
+
+.filters-center {
+    width: 100%;
+    max-width: 520px; /* контролирует ширину блока */
+    margin: 0 auto;   /* центрирует */
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+/* чтобы инпут не растягивался странно */
+.filters-center .control-input {
+    width: 100%;
+}
+
+/* фильтры по центру */
+.filters-center .filters {
+    justify-content: center;
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.streetarts.backend.dto.EventMapDto;
 import org.springframework.web.bind.annotation.*;
+import com.streetarts.backend.dto.EventListDto;
 
 @RestController
 @RequestMapping("/api/events")
@@ -30,14 +31,23 @@ public class EventController {
 //    public List<Event> searchEvents(@RequestParam(name = "search", required = false) String search) {
 //        return service.searchEvents(search);
 //    }
+//@GetMapping
+//public List<Event> searchEvents(
+//        @RequestParam(name = "search", required = false) String search,
+//        @RequestParam(name = "date", required = false) String date,
+//        @RequestParam(name = "time", required = false) String time
+//) {
+//    return service.searchEvents(search, date, time);
+//}
 @GetMapping
-public List<Event> searchEvents(
+public List<EventListDto> searchEvents(
         @RequestParam(name = "search", required = false) String search,
         @RequestParam(name = "date", required = false) String date,
         @RequestParam(name = "time", required = false) String time
 ) {
-    return service.searchEvents(search, date, time);
+    return service.searchEventsWithArtists(search, date, time);
 }
+
     @PostMapping
     public Event createEvent(@RequestBody Event event) {
         return service.createEvent(event);
