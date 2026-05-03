@@ -57,6 +57,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             setCurrentUser(result);
             showAuthError("Дані успішно оновлено");
+            if (user.role === "artist") {
+                await uploadArtistAvatar(userId);
+            }
 
         } catch (error) {
             showAuthError("Сервер недоступний");
@@ -170,30 +173,30 @@ function updateAvatarPreview(url) {
     img.style.display = "block";
 }
 
-document.getElementById("artistAvatarFile")?.addEventListener("change", async function () {
-    const user = getCurrentUser();
-    const userId = user.id || user.userId;
-
-    if (!this.files.length) return;
-
-    const formData = new FormData();
-    formData.append("file", this.files[0]);
-
-    const response = await fetch(`http://localhost:8080/api/artist-account/${userId}/avatar`, {
-        method: "POST",
-        body: formData
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-        showAuthError(result.message || "Не вдалося завантажити аватарку");
-        return;
-    }
-
-    updateAvatarPreview(result.avatar_url);
-    showAuthError("Аватарку оновлено");
-});
+// document.getElementById("artistAvatarFile")?.addEventListener("change", async function () {
+//     const user = getCurrentUser();
+//     const userId = user.id || user.userId;
+//
+//     if (!this.files.length) return;
+//
+//     const formData = new FormData();
+//     formData.append("file", this.files[0]);
+//
+//     const response = await fetch(`http://localhost:8080/api/artist-account/${userId}/avatar`, {
+//         method: "POST",
+//         body: formData
+//     });
+//
+//     const result = await response.json();
+//
+//     if (!response.ok) {
+//         showAuthError(result.message || "Не вдалося завантажити аватарку");
+//         return;
+//     }
+//
+//     updateAvatarPreview(result.avatar_url);
+//     showAuthError("Аватарку оновлено");
+// });
 
 document.getElementById("uploadArtistMediaBtn")?.addEventListener("click", async function () {
     const user = getCurrentUser();
@@ -273,4 +276,31 @@ async function deleteArtistMedia(mediaId) {
     }
 
     loadArtistMedia(userId);
+}
+
+async function uploadArtistAvatar(userId) {
+    const input = document.getElementById("artistAvatarFile");
+
+    if (!input || !input.files.length) {
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", input.files[0]);
+
+    const response = await fetch(`http://localhost:8080/api/artist-account/${userId}/avatar`, {
+        method: "POST",
+        body: formData
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        showAuthError(result.message || "Не вдалося завантажити аватарку");
+        return;
+    }
+
+    updateAvatarPreview(result.avatar_url);
+    input.value = "";
+    showAuthError("Дані та аватарку успішно оновлено");
 }

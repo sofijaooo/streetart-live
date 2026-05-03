@@ -32,7 +32,10 @@ async function loadArtistProfile() {
             return;
         }
 
+        // renderArtistProfile(artist);
+        // loadArtistEvents(artist);
         renderArtistProfile(artist);
+        loadArtistMedia(artist.userId);
         loadArtistEvents(artist);
     } catch (error) {
         console.error("Помилка завантаження профілю митця:", error);
@@ -156,5 +159,53 @@ function renderArtistEvents(events) {
         `;
 
         eventsContainer.appendChild(el);
+    });
+}
+async function loadArtistMedia(userId) {
+    const mediaGrid = document.getElementById("artistMediaGrid");
+
+    if (!mediaGrid) return;
+
+    try {
+        const response = await fetch(`http://localhost:8080/api/artist-account/${userId}/media`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const media = await response.json();
+        renderArtistMedia(media);
+
+    } catch (error) {
+        console.error("Помилка завантаження медіа митця:", error);
+        mediaGrid.innerHTML = `<p class="artist-events-empty">Не вдалося завантажити медіаконтент</p>`;
+    }
+}
+
+function renderArtistMedia(media) {
+    const mediaGrid = document.getElementById("artistMediaGrid");
+
+    mediaGrid.innerHTML = "";
+
+    if (!media || media.length === 0) {
+        mediaGrid.innerHTML = `<p class="artist-events-empty">Медіаконтент ще не додано</p>`;
+        return;
+    }
+
+    media.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "artist-media-card";
+
+        if (item.mediaType === "video") {
+            card.innerHTML = `
+                <video src="${item.mediaUrl}" controls></video>
+            `;
+        } else {
+            card.innerHTML = `
+                <img src="${item.mediaUrl}" alt="Медіаконтент митця">
+            `;
+        }
+
+        mediaGrid.appendChild(card);
     });
 }
