@@ -17,6 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("accountBirthDate").value = formatDateForInput(user.birthDate);
     }
     const userId = user.id || user.userId;
+    if (user.role === "artist") {
+        loadArtistAccount(userId);
+        loadArtistMedia(userId);
+    }
     const form = document.getElementById("accountForm");
 
     form.addEventListener("submit", async (event) => {
@@ -135,4 +139,138 @@ function validateAccountForm(data) {
     }
 
     return null;
+}
+
+async function loadArtistAccount(userId) {
+    const block = document.getElementById("artistAccountFields");
+    if (!block) return;
+
+    block.classList.remove("is-hidden");
+
+    const response = await fetch(`http://localhost:8080/api/artist-account/${userId}`);
+    const artist = await response.json();
+
+    document.getElementById("artistNickname").value = artist.nickname || "";
+    document.getElementById("artistGenre").value = artist.genre || "";
+    document.getElementById("artistCity").value = artist.city || "";
+    document.getElementById("artistAbout").value = artist.about || "";
+
+    updateAvatarPreview(artist.avatar_url);
+}
+
+function updateAvatarPreview(url) {
+    const img = document.getElementById("artistAvatarPreview");
+
+    if (!url) {
+        img.style.display = "none";
+        return;
+    }
+
+    img.src = url;
+    img.style.display = "block";
+}
+
+document.getElementById("artistAvatarFile")?.addEventListener("change", async function () {
+    const user = getCurrentUser();
+    const userId = user.id || user.userId;
+
+    if (!this.files.length) return;
+
+    const formData = new FormData();
+    formData.append("file", this.files[0]);
+
+    const response = await fetch(`http://localhost:8080/api/artist-account/${userId}/avatar`, {
+        method: "POST",
+        body: formData
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        showAuthError(result.message || "Не вдалося завантажити аватарку");
+        return;
+    }
+
+    updateAvatarPreview(result.avatar_url);
+    showAuthError("Аватарку оновлено");
+});
+
+document.getElementById("uploadArtistMediaBtn")?.addEventListener("click", async function () {
+    const user = getCurrentUser();
+    const userId = user.id || user.userId;
+    const input = document.getElementById("artistMediaFile");
+
+    if (!input.files.length) {
+        showAuthError("Оберіть файл");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", input.files[0]);
+
+    const response = await fetch(`http://localhost:8080/api/artist-account/${userId}/media`, {
+        method: "POST",
+        body: formData
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        showAuthError(result.message || "Не вдалося завантажити медіа");
+        return;
+    }
+
+    input.value = "";
+    loadArtistMedia(userId);
+});
+
+async function loadArtistMedia(userId) {
+    const grid = document.getElementById("artistMediaGrid");
+    if (!grid) return;
+
+    const response = await fetch(`http://localhost:8080/api/artist-account/${userId}/media`);
+    const media = await response.json();
+
+    grid.innerHTML = "";
+
+    if (!media.length) {
+        grid.innerHTML = `<p>Медіаконтент ще не додано.</p>`;
+        return;
+    }
+
+    media.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "artist-media-item";
+
+        const content = item.mediaType === "video"
+            ? `<video src="${item.mediaUrl}" controls></video>`
+            : `<img src="${item.mediaUrl}" alt="Медіа митця">`;
+
+        card.innerHTML = `
+            ${content}
+            <button type="button" onclick="deleteArtistMedia(${item.id})">
+                Видалити
+            </button>
+        `;
+
+        grid.appendChild(card);
+    });
+}
+
+async function deleteArtistMedia(mediaId) {
+    const user = getCurrentUser();
+    const userId = user.id || user.userId;
+
+    const response = await fetch(`http://localhost:8080/api/artist-account/media/${mediaId}`, {
+        method: "DELETE"
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        showAuthError(result.message || "Не вдалося видалити медіа");
+        return;
+    }
+
+    loadArtistMedia(userId);
 }

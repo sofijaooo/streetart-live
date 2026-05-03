@@ -30,6 +30,16 @@ public class Artists {
     @Column(name = "avatar_url", nullable = true, length = 255)
     private String avatar_url;
 
+    @Column(name = "avatar_public_id")
+    private String avatarPublicId;
+
+    public String getAvatarPublicId() {
+        return avatarPublicId;
+    }
+
+    public void setAvatarPublicId(String avatarPublicId) {
+        this.avatarPublicId = avatarPublicId;
+    }
     public Long getId() {
         return id;
     }

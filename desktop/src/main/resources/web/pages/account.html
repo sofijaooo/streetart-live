@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" href="../css/app.css">
     <link rel="stylesheet" href="../css/auth.css">
+    <link rel="stylesheet" href="../css/account.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Stalinist+One&family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
 
@@ -81,6 +82,36 @@
             <input id="accountPhone" type="tel" placeholder="Телефон у форматі +380991234567">
             <input id="accountUsername" type="text" placeholder="Нікнейм">
             <input id="accountEmail" type="email" placeholder="Email">
+
+            <div id="artistAccountFields" class="artist-fields is-hidden">
+                <h2 class="account-section-title">Профіль митця</h2>
+
+                <div class="avatar-preview">
+                    <img id="artistAvatarPreview" src="" alt="Аватар митця">
+                </div>
+
+                <input id="artistAvatarFile" type="file" accept="image/*">
+
+                <input id="artistNickname" type="text" placeholder="Псевдонім митця">
+
+                <select id="artistGenre">
+                    <option value="">Жанр</option>
+                    <option value="singer">Вокал</option>
+                    <option value="musician">Музика</option>
+                    <option value="painter">Живопис</option>
+                    <option value="performer">Перформанс</option>
+                </select>
+
+                <input id="artistCity" type="text" placeholder="Місто">
+                <textarea id="artistAbout" placeholder="Короткий опис творчості"></textarea>
+
+                <h2 class="account-section-title">Медіаконтент</h2>
+
+                <input id="artistMediaFile" type="file" accept="image/*,video/*">
+                <button type="button" id="uploadArtistMediaBtn">Додати медіа</button>
+
+                <div id="artistMediaGrid" class="artist-media-grid"></div>
+            </div>
 
             <button type="submit">Зберегти зміни</button>
 

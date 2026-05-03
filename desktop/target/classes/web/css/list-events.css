@@ -723,10 +723,10 @@ main input#search.control-input {
     height: 46px !important;
     min-height: 0 !important;
 
-    padding: 0 !important;
+    /*padding: 0 !important;*/
     margin: 0 !important;
 
-    border: none !important;
+    /*border: none !important;*/
     outline: none !important;
     background: transparent !important;
     box-shadow: none !important;
