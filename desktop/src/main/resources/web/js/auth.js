@@ -1,14 +1,28 @@
+// function getCurrentUser() {
+//     const raw = localStorage.getItem("currentUser");
+//     return raw ? JSON.parse(raw) : null;
+// }
+//
+// function setCurrentUser(user) {
+//     localStorage.setItem("currentUser", JSON.stringify(user));
+// }
+//
+// function logout() {
+//     localStorage.removeItem("currentUser");
+//     window.location.href = "../index.html";
+// }
+
 function getCurrentUser() {
-    const raw = localStorage.getItem("currentUser");
+    const raw = sessionStorage.getItem("currentUser");
     return raw ? JSON.parse(raw) : null;
 }
 
 function setCurrentUser(user) {
-    localStorage.setItem("currentUser", JSON.stringify(user));
+    sessionStorage.setItem("currentUser", JSON.stringify(user));
 }
 
 function logout() {
-    localStorage.removeItem("currentUser");
+    sessionStorage.removeItem("currentUser");
     window.location.href = "../index.html";
 }
 
@@ -66,32 +80,113 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (registerForm) {
+        // registerForm.addEventListener("submit", async (event) => {
+        //     event.preventDefault();
+        //
+        //     const role = isArtist.checked ? "artist" : "user";
+        //
+        //     const user = {
+        //         id: Date.now(),
+        //         username: document.getElementById("username").value.trim(),
+        //         email: document.getElementById("email").value.trim(),
+        //         role: role
+        //     };
+        //
+        //     if (role === "artist") {
+        //         user.artistProfile = {
+        //             nickname: document.getElementById("artistNickname").value.trim(),
+        //             genre: document.getElementById("artistGenre").value,
+        //             city: document.getElementById("artistCity").value.trim(),
+        //             about: document.getElementById("artistAbout").value.trim()
+        //         };
+        //     }
+        //
+        //     setCurrentUser(user);
+        //
+        //     window.location.href = role === "artist"
+        //         ? "performers.html"
+        //         : "list-events.html";
+        // });
         registerForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
             const role = isArtist.checked ? "artist" : "user";
 
-            const user = {
-                id: Date.now(),
+            const data = {
                 username: document.getElementById("username").value.trim(),
                 email: document.getElementById("email").value.trim(),
-                role: role
+                password: document.getElementById("password").value,
+                role: role,
+
+                artistNickname: document.getElementById("artistNickname")?.value.trim(),
+                artistGenre: document.getElementById("artistGenre")?.value,
+                artistCity: document.getElementById("artistCity")?.value.trim(),
+                artistAbout: document.getElementById("artistAbout")?.value.trim()
             };
 
-            if (role === "artist") {
-                user.artistProfile = {
-                    nickname: document.getElementById("artistNickname").value.trim(),
-                    genre: document.getElementById("artistGenre").value,
-                    city: document.getElementById("artistCity").value.trim(),
-                    about: document.getElementById("artistAbout").value.trim()
-                };
+            try {
+                const response = await fetch("http://localhost:8080/api/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    showAuthError(result.message || "Помилка реєстрації");
+                    return;
+                }
+
+                setCurrentUser(result);
+                window.location.href = "../index.html";
+
+            } catch (error) {
+                showAuthError("Сервер недоступний");
             }
-
-            setCurrentUser(user);
-
-            window.location.href = role === "artist"
-                ? "performers.html"
-                : "list-events.html";
         });
     }
 });
+
+function showAuthError(message) {
+    let errorBox = document.getElementById("authError");
+
+    if (!errorBox) {
+        errorBox = document.createElement("p");
+        errorBox.id = "authError";
+        errorBox.className = "auth-error";
+        document.querySelector("form").prepend(errorBox);
+    }
+
+    errorBox.textContent = message;
+}
+
+const loginForm = document.getElementById("loginForm");
+
+if (loginForm) {
+    loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const data = {
+            email: document.getElementById("loginEmail").value.trim(),
+            password: document.getElementById("loginPassword").value,
+            role: document.getElementById("loginRole").value
+        };
+
+        const response = await fetch("http://localhost:8080/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            showAuthError(result.message || "Помилка входу");
+            return;
+        }
+
+        setCurrentUser(result);
+        window.location.href = "../index.html";
+    });
+}
