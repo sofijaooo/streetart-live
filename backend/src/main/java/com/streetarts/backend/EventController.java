@@ -16,6 +16,9 @@ import com.streetarts.backend.dto.EventMapDto;
 import org.springframework.web.bind.annotation.*;
 import com.streetarts.backend.dto.EventListDto;
 
+import org.springframework.http.ResponseEntity;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/events")
 @CrossOrigin(origins = "*")
@@ -49,8 +52,14 @@ public List<EventListDto> searchEvents(
 }
 
     @PostMapping
-    public Event createEvent(@RequestBody Event event) {
-        return service.createEvent(event);
+    public ResponseEntity<?> createEvent(@RequestBody Event event) {
+        try {
+            return ResponseEntity.ok(service.createEvent(event));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("message", e.getMessage()));
+        }
     }
 
     @GetMapping("/map")

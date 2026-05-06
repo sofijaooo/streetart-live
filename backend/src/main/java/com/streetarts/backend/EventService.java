@@ -84,7 +84,39 @@ public class EventService {
     }
 
     // создание события
+
     public Event createEvent(Event event) {
+        validateEvent(event);
+
+        event.setDateRequest(LocalDate.now());
+        event.setStatus("pending");
+
+        GeocodingService.Coordinates coordinates = geocodingService.geocode(event.getPlace());
+
+        if (coordinates == null) {
+            throw new IllegalArgumentException("Не вдалося знайти координати для цієї адреси");
+        }
+
+        event.setLatitude(coordinates.getLatitude());
+        event.setLongitude(coordinates.getLongitude());
+
+        return repository.save(event);
+    }
+//    public Event createEvent(Event event) {
+////        if (event.getPlace() != null && !event.getPlace().isBlank()) {
+////            GeocodingService.Coordinates coordinates = geocodingService.geocode(event.getPlace());
+////
+////            if (coordinates != null) {
+////                event.setLatitude(coordinates.getLatitude());
+////                event.setLongitude(coordinates.getLongitude());
+////            }
+////        }
+////
+////        return repository.save(event);
+//        event.setDateRequest(LocalDate.now());
+//        event.setStatus("pending");
+////        event.setDecision(null);
+//
 //        if (event.getPlace() != null && !event.getPlace().isBlank()) {
 //            GeocodingService.Coordinates coordinates = geocodingService.geocode(event.getPlace());
 //
@@ -95,22 +127,40 @@ public class EventService {
 //        }
 //
 //        return repository.save(event);
-        event.setDateRequest(LocalDate.now());
-        event.setStatus("pending");
-//        event.setDecision(null);
-
-        if (event.getPlace() != null && !event.getPlace().isBlank()) {
-            GeocodingService.Coordinates coordinates = geocodingService.geocode(event.getPlace());
-
-            if (coordinates != null) {
-                event.setLatitude(coordinates.getLatitude());
-                event.setLongitude(coordinates.getLongitude());
-            }
-        }
-
-        return repository.save(event);
+//    }
+private void validateEvent(Event event) {
+    if (event.getUserId() == null) {
+        throw new IllegalArgumentException("Користувача не знайдено");
     }
 
+    if (event.getPlace() == null || event.getPlace().isBlank()) {
+        throw new IllegalArgumentException("Введіть адресу проведення події");
+    }
+
+    if (event.getPlace().trim().length() < 5) {
+        throw new IllegalArgumentException("Адреса має містити мінімум 5 символів");
+    }
+
+    if (event.getPlace().trim().length() > 100) {
+        throw new IllegalArgumentException("Адреса не може бути довшою за 100 символів");
+    }
+
+    if (event.getEventDate() == null) {
+        throw new IllegalArgumentException("Оберіть дату події");
+    }
+
+    if (event.getEventDate().isBefore(LocalDate.now())) {
+        throw new IllegalArgumentException("Дата події не може бути в минулому");
+    }
+
+    if (event.getTime() == null) {
+        throw new IllegalArgumentException("Оберіть час події");
+    }
+
+    if (event.getComments() != null && event.getComments().length() > 255) {
+        throw new IllegalArgumentException("Коментар не може бути довшим за 255 символів");
+    }
+}
     // данные для карты
     public List<EventMapDto> getEventsForMap() {
         return repository.findByStatus("approved").stream().map(event -> {
