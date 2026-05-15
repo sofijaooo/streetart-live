@@ -214,3 +214,11 @@ body {
 body.is-artist .artist-only {
     display: flex !important;
 }
+
+.admin-only {
+    display: none;
+}
+
+body.is-admin .admin-only {
+    display: block;
+}

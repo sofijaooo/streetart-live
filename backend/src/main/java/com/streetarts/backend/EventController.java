@@ -78,9 +78,16 @@ public List<EventListDto> searchEvents(
         return service.approveEvent(eventId);
     }
 
+//    @PutMapping("/{eventId}/reject")
+//    public Event rejectEvent(@PathVariable Long eventId, String comment) {
+//        return service.rejectEvent(eventId, comment);
+//    }
     @PutMapping("/{eventId}/reject")
-    public Event rejectEvent(@PathVariable Long eventId) {
-        return service.rejectEvent(eventId);
+    public Event rejectEvent(
+            @PathVariable Long eventId,
+            @RequestBody Map<String, String> body
+    ) {
+        return service.rejectEvent(eventId, body.get("comment"));
     }
 }
 

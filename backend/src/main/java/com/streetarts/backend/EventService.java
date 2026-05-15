@@ -56,7 +56,7 @@ public class EventService {
 //    }
 
     public List<Event> searchEvents(String search, String date, String time) {
-        List<Event> events = repository.findAll();
+        List<Event> events = repository.findByStatus("approved");
 
         return events.stream()
                 .filter(event ->
@@ -213,13 +213,14 @@ private void validateEvent(Event event) {
         return repository.save(event);
     }
 
-    public Event rejectEvent(Long eventId) {
+    public Event rejectEvent(Long eventId, String comment) {
         Event event = repository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Заявку не знайдено"));
 
         event.setStatus("rejected");
-
+        event.setComments(comment);
         return repository.save(event);
     }
+
 }
 

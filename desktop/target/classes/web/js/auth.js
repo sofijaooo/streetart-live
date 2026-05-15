@@ -109,6 +109,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "is-artist",
         !!user && user.role === "artist"
     );
+    document.body.classList.toggle(
+        "is-admin",
+        !!user && user.role === "admin"
+    );
     const registerForm = document.getElementById("registerForm");
     const isArtist = document.getElementById("isArtist");
     const artistFields = document.getElementById("artistFields");
