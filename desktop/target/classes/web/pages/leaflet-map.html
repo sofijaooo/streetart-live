@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карта подій</title>
+
+    <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            crossorigin=""
+    />
+
+    <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #1c1d21;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .leaflet-container {
+            width: 100%;
+            height: 100%;
+            background: #1c1d21;
+        }
+
+        .leaflet-container img,
+        .leaflet-pane img,
+        .leaflet-tile {
+            max-width: none !important;
+            max-height: none !important;
+        }
+        /*.leaflet-tile {*/
+        /*    filter: brightness(1.4);*/
+        /*}*/
+        .leaflet-popup-content {
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        .leaflet-popup-content-wrapper {
+            background: rgba(20, 22, 28, 0.96);
+            color: #f3f3f3;
+            border-radius: 16px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.32);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 0;
+        }
+
+        .leaflet-popup-content {
+            margin: 0;
+            min-width: 220px;
+            font-family: 'Unbounded', sans-serif;
+        }
+
+        .leaflet-popup-tip {
+            background: rgba(20, 22, 28, 0.96);
+        }
+
+        .event-popup {
+            padding: 14px 14px 12px;
+        }
+
+        .popup-title {
+            color: #ffffff;
+            position: relative;
+            padding-left: 12px;
+        }
+
+        .popup-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 4px;
+            height: 16px;
+            border-radius: 999px;
+            background: #ff3b30;
+        }
+
+        .popup-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .popup-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .popup-row:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .popup-label {
+            font-size: 11px;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #9ea3ad;
+        }
+
+        .popup-value {
+            font-size: 13px;
+            line-height: 1.45;
+            color: #f3f3f3;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .leaflet-popup-content-wrapper {
+            background: rgba(15, 18, 25, 0.96);
+            color: #f3f3f3;
+            border-radius: 14px;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 0;
+        }
+
+        .leaflet-popup-content {
+            margin: 0;
+            min-width: 0;
+            width: 250px;
+            font-family: 'Unbounded', sans-serif;
+        }
+
+        .leaflet-popup-tip {
+            background: rgba(15, 18, 25, 0.96);
+        }
+
+        .leaflet-container a.leaflet-popup-close-button {
+            color: #8f96a3;
+            padding: 8px 10px 0 0;
+            font-size: 18px;
+            transition: 0.2s ease;
+        }
+
+        .leaflet-container a.leaflet-popup-close-button:hover {
+            color: #ffffff;
+            background: transparent;
+        }
+
+        .event-popup {
+            padding: 12px 12px 10px;
+        }
+
+        .popup-title {
+            margin: 0 0 10px;
+            padding-left: 10px;
+            position: relative;
+            font-family: 'Unbounded', sans-serif;
+            font-size: 13px;
+            line-height: 1.25;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .popup-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 1px;
+            width: 4px;
+            height: 16px;
+            border-radius: 999px;
+            background: #ff3b30;
+        }
+
+        .popup-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .popup-row {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .popup-row:last-child {
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .popup-row-inline {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            align-items: start;
+        }
+
+        .popup-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .popup-label {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 10px;
+            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #8f96a3;
+        }
+
+        .popup-value {
+            font-family: 'Unbounded', sans-serif;
+            font-size: 12px;
+            line-height: 1.45;
+            color: #f5f7fb;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+    </style>
+
+    <script src="../js/map.js" defer></script>
+</head>
+<body>
+<div id="map"></div>
+
+<script>
+    window.L_DISABLE_3D = true;
+</script>
+
+<script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        crossorigin=""
+></script>
+
+<script>
+    const map = L.map('map', {
+        zoomControl: true,
+        fadeAnimation: false,
+        markerZoomAnimation: false,
+        zoomAnimation: false
+    }).setView([50.9077, 34.7981], 13);
+    let tileLayer;
+    // L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    //     attribution: '&copy; OpenStreetMap & CARTO'
+    // }).addTo(map);
+    // функция смены темы
+    function applyTheme(theme) {
+        if (tileLayer) {
+            map.removeLayer(tileLayer);
+        }
+
+        if (theme === "light") {
+            tileLayer = L.tileLayer(
+                'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+                { attribution: '&copy; OpenStreetMap & CARTO' }
+            );
+        } else {
+            tileLayer = L.tileLayer(
+                'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+            );
+        }
+
+        tileLayer.addTo(map);
+    }
+
+    // стартовая тема
+    applyTheme("dark");
+
+
+    // 👇 ВОТ ЭТО ДОБАВЛЯЕШЬ
+    // window.addEventListener("message", (event) => {
+    //     if (event.data.type === "SET_THEME") {
+    //         applyTheme(event.data.theme);
+    //     }
+    // });
+
+    const markersById = new Map();
+
+    window.addEventListener("message", (event) => {
+        if (!event.data) return;
+
+        if (event.data.type === "SET_THEME") {
+            applyTheme(event.data.theme);
+        }
+
+        if (event.data.type === "FOCUS_EVENT") {
+            const focusEvent = event.data.event;
+            if (!focusEvent) return;
+
+            const id = String(focusEvent.id ?? "");
+            const marker = markersById.get(id);
+
+            if (marker) {
+                const lat = Number(focusEvent.latitude);
+                const lng = Number(focusEvent.longitude);
+
+                if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+                    map.setView([lat, lng], 17, { animate: true });
+                }
+
+                setTimeout(() => {
+                    marker.openPopup();
+                }, 250);
+
+                return;
+            }
+
+            const lat = Number(focusEvent.latitude);
+            const lng = Number(focusEvent.longitude);
+
+            if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+                map.setView([lat, lng], 17, { animate: true });
+            }
+        }
+    });
+
+    async function loadEventsToMap() {
+        try {
+            const response = await fetch('http://localhost:8080/api/events/map');
+
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+
+            const events = await response.json();
+            console.log('EVENTS:', events);
+
+            if (!Array.isArray(events)) {
+                throw new Error('Відповідь сервера не є масивом');
+            }
+
+            const bounds = [];
+
+            events.forEach(event => {
+                if (event.latitude == null || event.longitude == null) {
+                    return;
+                }
+
+                const lat = Number(event.latitude);
+                const lng = Number(event.longitude);
+
+                if (Number.isNaN(lat) || Number.isNaN(lng)) {
+                    console.warn('Некоректні координати:', event);
+                    return;
+                }
+
+                const icon = L.divIcon({
+                    className: '',
+                    html: `
+        <div style="
+            width:14px;
+            height:14px;
+            background:#ff3b30;
+            border-radius:50%;
+            box-shadow:0 0 0 4px rgba(255,59,48,0.2);
+        "></div>
+    `,
+                    iconSize: [14, 14],
+                    iconAnchor: [7, 7]
+                });
+
+                const marker = L.marker([lat, lng], { icon }).addTo(map);
+
+//                 marker.bindPopup(`
+//     <div class="popup-title">Подія #${event.id ?? '-'}</div>
+//     <div class="popup-row"><b>Місце:</b> ${event.place ?? '-'}</div>
+//     <div class="popup-row"><b>Дата:</b> ${event.eventDate ?? '-'}</div>
+//     <div class="popup-row"><b>Час:</b> ${event.time ?? '-'}</div>
+// `);
+                marker.bindPopup(`
+    <div class="event-popup">
+        <div class="popup-title">Подія #${event.id ?? '-'}</div>
+
+        <div class="popup-info">
+            <div class="popup-row">
+                <span class="popup-label">Місце</span>
+                <span class="popup-value">${event.place ?? '-'}</span>
+            </div>
+
+            <div class="popup-row popup-row-inline">
+                <div class="popup-cell">
+                    <span class="popup-label">Дата</span>
+                    <span class="popup-value">${event.eventDate ?? '-'}</span>
+                </div>
+
+                <div class="popup-cell">
+                    <span class="popup-label">Час</span>
+                    <span class="popup-value">${event.time ?? '-'}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+`);
+
+                if (event.id != null) {
+                    markersById.set(String(event.id), marker);
+                }
+
+                bounds.push([lat, lng]);
+            });
+
+            if (bounds.length === 1) {
+                map.setView(bounds[0], 17);
+            } else if (bounds.length > 1) {
+                map.fitBounds(bounds, { padding: [30, 30] });
+            }
+
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 300);
+
+        } catch (error) {
+            console.error('Помилка завантаження карти:', error);
+        }
+    }
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            map.invalidateSize();
+            loadEventsToMap();
+        }, 200);
+    });
+
+    window.addEventListener('resize', () => {
+        map.invalidateSize();
+    });
+</script>
+</body>
+</html>

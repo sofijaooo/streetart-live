@@ -1,0 +1,344 @@
+// const searchField = document.getElementById("search");
+// const filterButton = document.getElementById("filterBtn");
+// const eventsContainer = document.getElementById("eventsList");
+//
+// // загрузка событий
+// async function loadEvents(query = "") {
+//     try {
+//         let url = "http://localhost:8080/api/events";
+//
+//         if (query.trim() !== "") {
+//             url += `?search=${encodeURIComponent(query)}`;
+//         }
+//
+//         const response = await fetch(url);
+//         const events = await response.json();
+//
+//         renderEvents(events);
+//     } catch (error) {
+//         console.error("Помилка завантаження подій:", error);
+//     }
+// }
+//
+// // рендер событий
+// function renderEvents(events) {
+//     eventsContainer.innerHTML = "";
+//
+//     if (!events || events.length === 0) {
+//         eventsContainer.innerHTML = `<p>Події не знайдено</p>`;
+//         return;
+//     }
+//     // <p>Коментар: ${event.comments || ""}</p>
+//     // <p>Рішення: ${event.decision === null ? "Не визначено" : event.decision}</p>
+//     events.forEach(event => {
+//         const el = document.createElement("div");
+//         el.className = "event-card";
+//         el.innerHTML = `
+//
+//
+//         <div class="event-row event-row-top">
+//             <div class="event-date-time">
+//                 <span>${event.eventDate}</span>
+//                 <span>${event.time}</span>
+//             </div>
+//
+//             <button class="event-btn">Показати на мапі</button>
+//         </div>
+//
+//         <div class="event-row event-row-bottom">
+//             <div class="event-user">
+//                 <div class="event-avatar">
+//
+//                 </div>
+//                 <span class="event-username">${event.userId}</span>
+//             </div>
+//
+//             <div class="event-place">
+//                 ${event.place}
+//             </div>
+//         </div>
+//
+//         `;
+//         eventsContainer.appendChild(el);
+//     });
+// }
+//
+// // динамический поиск при вводе
+// searchField.addEventListener("input", function () {
+//     const query = this.value;
+//     loadEvents(query);
+// });
+//
+// // поиск по кнопке
+// filterButton.addEventListener("click", function () {
+//     const query = searchField.value;
+//     loadEvents(query);
+// });
+//
+// // при загрузке страницы показываем все события
+// document.addEventListener("DOMContentLoaded", () => {
+//     loadEvents();
+// });
+if (!protectPage()) {
+    throw new Error("Access denied");
+}
+
+const searchField = document.getElementById("search");
+const filterButton = document.getElementById("filterBtn");
+const eventsContainer = document.getElementById("eventsList");
+const dateValue = document.getElementById("dateValue");
+const timeFilter = document.getElementById("timeFilter");
+
+const timeBtn = document.getElementById("timeBtn");
+const timeLabel = document.getElementById("timeLabel");
+const timePopover = document.getElementById("timePopover");
+const clearTimeBtn = document.getElementById("clearTime");
+const closeTimeBtn = document.getElementById("closeTime");
+const timeOptions = document.querySelectorAll(".time-option");
+
+async function loadEvents() {
+    try {
+        let url = "http://localhost:8080/api/events";
+        const params = [];
+
+        const search = searchField.value.trim();
+        const date = dateValue ? dateValue.value.trim() : "";
+        const time = timeValue ? timeValue.value.trim() : "";
+
+        if (search !== "") {
+            params.push(`search=${encodeURIComponent(search)}`);
+        }
+
+        if (date !== "") {
+            params.push(`date=${encodeURIComponent(date)}`);
+        }
+
+        if (time !== "") {
+            params.push(`time=${encodeURIComponent(time)}`);
+        }
+
+        if (params.length > 0) {
+            url += "?" + params.join("&");
+        }
+        console.log("REQUEST URL:", url);
+        console.log("dateValue:", dateValue?.value);
+        console.log("timeFilter:", timeFilter?.value);
+
+        const response = await fetch(url);
+        const events = await response.json();
+
+        renderEvents(events);
+    } catch (error) {
+        console.error("Помилка завантаження подій:", error);
+    }
+}
+
+function renderEvents(events) {
+    eventsContainer.innerHTML = "";
+
+    if (!events || events.length === 0) {
+        eventsContainer.innerHTML = `<p>Події не знайдено</p>`;
+        return;
+    }
+
+    events.forEach(event => {
+        const el = document.createElement("div");
+        el.className = "event-card";
+
+        // el.innerHTML = `
+        //     <div class="event-row event-row-top">
+        //         <div class="event-date-time">
+        //             <span>${event.eventDate}</span>
+        //             <span>${event.time}</span>
+        //         </div>
+        //
+        //         <button class="event-btn">Показати на мапі</button>
+        //     </div>
+        //
+        //     <div class="event-row event-row-bottom">
+        //         <div class="event-user">
+        //             <div class="event-avatar"></div>
+        //             <span class="event-username">${event.userId}</span>
+        //         </div>
+        //
+        //         <div class="event-place">
+        //             ${event.place}
+        //         </div>
+        //     </div>
+        // `;
+
+//         el.innerHTML = `
+//     <div class="event-row event-row-top">
+//         <div class="event-date-time">
+//             <span>${event.eventDate}</span>
+//             <span>${event.time}</span>
+//         </div>
+//
+//         <button
+//             class="event-btn event-map-btn"
+//             data-id="${event.id}"
+//             data-lat="${event.latitude ?? ''}"
+//             data-lng="${event.longitude ?? ''}"
+//             data-place="${event.place ?? ''}"
+//             data-date="${event.eventDate ?? ''}"
+//             data-time="${event.time ?? ''}"
+//         >
+//             Показати на мапі
+//         </button>
+//     </div>
+//
+//     <div class="event-row event-row-bottom">
+//         <div class="event-user">
+//             <div class="event-avatar"></div>
+//             <span class="event-username">${event.userId}</span>
+//         </div>
+//
+//         <div class="event-place">
+//             ${event.place}
+//         </div>
+//     </div>
+// `;
+
+        el.innerHTML = `
+    <div class="event-row event-row-top">
+        <div class="event-date-time">
+            <span>${event.eventDate}</span>
+            <span>${event.time}</span>
+        </div>
+
+        <button 
+            class="event-btn event-map-btn"
+            data-id="${event.id}"
+            data-lat="${event.latitude ?? ''}"
+            data-lng="${event.longitude ?? ''}"
+            data-place="${event.place ?? ''}"
+            data-date="${event.eventDate ?? ''}"
+            data-time="${event.time ?? ''}"
+        >
+            Показати на мапі
+        </button>
+    </div>
+
+    <div class="event-row event-row-bottom">
+        <div class="event-user">
+            <div class="event-avatar">
+                <img src="${event.avatarUrl || ''}" alt="${event.nickname || 'artist'}">
+            </div>
+            <span class="event-username">${event.nickname || 'Невідомий виконавець'}</span>
+        </div>
+
+        <div class="event-place">
+            ${event.place}
+        </div>
+    </div>
+`;
+
+        eventsContainer.appendChild(el);
+
+        const mapBtn = el.querySelector(".event-map-btn");
+
+        mapBtn.addEventListener("click", () => {
+            const focusEvent = {
+                id: mapBtn.dataset.id,
+                latitude: mapBtn.dataset.lat,
+                longitude: mapBtn.dataset.lng,
+                place: mapBtn.dataset.place,
+                eventDate: mapBtn.dataset.date,
+                time: mapBtn.dataset.time
+            };
+
+            localStorage.setItem("mapFocusEvent", JSON.stringify(focusEvent));
+            window.location.href = "map.html";
+        });
+    });
+}
+
+function closeTimePopover() {
+    if (timePopover) {
+        timePopover.hidden = true;
+    }
+    if (timeBtn) {
+        timeBtn.setAttribute("aria-expanded", "false");
+    }
+}
+
+function openTimePopover() {
+    if (timePopover) {
+        timePopover.hidden = false;
+    }
+    if (timeBtn) {
+        timeBtn.setAttribute("aria-expanded", "true");
+    }
+}
+
+if (timeBtn && timePopover) {
+    timeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        const isHidden = timePopover.hidden;
+        if (isHidden) {
+            openTimePopover();
+        } else {
+            closeTimePopover();
+        }
+    });
+}
+
+timeOptions.forEach(option => {
+    option.addEventListener("click", () => {
+        const value = option.dataset.value;
+        const label = option.textContent.trim();
+
+        if (timeValue) {
+            timeValue.value = value;
+        }
+
+        if (timeLabel) {
+            timeLabel.textContent = label;
+        }
+
+        timeOptions.forEach(item => item.classList.remove("is-selected"));
+        option.classList.add("is-selected");
+
+        closeTimePopover();
+    });
+});
+
+if (clearTimeBtn) {
+    clearTimeBtn.addEventListener("click", () => {
+        if (timeValue) {
+            timeValue.value = "";
+        }
+
+        if (timeLabel) {
+            timeLabel.textContent = "Час";
+        }
+
+        timeOptions.forEach(item => item.classList.remove("is-selected"));
+    });
+}
+
+if (closeTimeBtn) {
+    closeTimeBtn.addEventListener("click", () => {
+        closeTimePopover();
+    });
+}
+
+document.addEventListener("click", (e) => {
+    if (
+        timePopover &&
+        timeBtn &&
+        !timePopover.hidden &&
+        !timePopover.contains(e.target) &&
+        !timeBtn.contains(e.target)
+    ) {
+        closeTimePopover();
+    }
+});
+
+searchField.addEventListener("input", loadEvents);
+filterButton.addEventListener("click", loadEvents);
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadEvents();
+});
