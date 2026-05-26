@@ -14,9 +14,6 @@ import java.nio.file.Path;
 
 public class DesktopApp extends Application {
 
-    // DEV-путь: если этот файл существует, грузим его с диска (из target/classes),
-    // чтобы изменения подхватывались быстрее.
-    // Можно поменять на src/main/resources/web/index.html, но тогда нужна сборка/копирование ресурсов вручную.
     private static final Path DEV_INDEX = Path.of("target/classes/web/index.html");
 
     @Override
@@ -40,14 +37,12 @@ public class DesktopApp extends Application {
     }
 
     private String resolveIndexUrl() {
-        // 1) DEV: грузим с диска (если файл есть)
         try {
             if (Files.exists(DEV_INDEX)) {
                 return DEV_INDEX.toAbsolutePath().toUri().toString();
             }
         } catch (Exception ignored) {}
 
-        // 2) PROD: грузим из ресурсов (внутри JAR)
         URL res = getClass().getResource("/web/index.html");
         if (res == null) {
             throw new IllegalStateException("Resource /web/index.html not found. " +

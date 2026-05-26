@@ -2,18 +2,17 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Акаунт</title>
+    <title>Підтримка</title>
 
     <link rel="stylesheet" href="../css/app.css">
-    <link rel="stylesheet" href="../css/auth.css">
-    <link rel="stylesheet" href="../css/account.css">
+    <link rel="stylesheet" href="../css/support.css">
 
     <link href="https://fonts.googleapis.com/css2?family=Stalinist+One&family=Unbounded:wght@200..900&display=swap" rel="stylesheet">
 
     <script src="../js/auth.js" defer></script>
-    <script src="../js/account.js" defer></script>
 </head>
 <body>
+
 <header class="topbar">
     <h1 class="logo">StreetArt Live</h1>
     <nav class="navbar">
@@ -84,58 +83,112 @@
         </div>
 
     </nav>
+
 </header>
 
-<main class="content auth-page">
-    <section class="auth-card">
-        <h1>Мій акаунт</h1>
-        <p>Переглядайте та редагуйте особисті дані.</p>
+<main class="content support-page">
 
-        <form id="accountForm" novalidate>
-            <input id="accountName" type="text" placeholder="Ім’я">
-            <input id="accountSurname" type="text" placeholder="Прізвище">
-            <input id="accountBirthDate" type="text" placeholder="Дата народження: 31.01.2000">
-            <input id="accountPhone" type="tel" placeholder="Телефон у форматі +380991234567">
-            <input id="accountUsername" type="text" placeholder="Нікнейм">
-            <input id="accountEmail" type="email" placeholder="Email">
+    <section class="support-hero">
+        <p class="support-label">Підтримка</p>
 
-            <div id="artistAccountFields" class="artist-fields is-hidden">
-                <h2 class="account-section-title">Профіль митця</h2>
+        <h1>Зв’язок із розробником платформи</h1>
 
-                <div class="avatar-preview">
-                    <img id="artistAvatarPreview" src="" alt="Аватар митця">
-                </div>
+        <p class="support-hero-text">
+            Якщо у вас виникли технічні проблеми, питання щодо роботи платформи
+            або пропозиції для покращення StreetArt Live, ви можете звернутися
+            до розробника зручним способом.
+        </p>
+    </section>
 
-                <input id="artistAvatarFile" type="file" accept="image/*">
+    <section class="support-grid">
 
-                <input id="artistNickname" type="text" placeholder="Псевдонім митця">
+        <article class="support-card">
+            <div class="support-icon">✉</div>
 
-                <select id="artistGenre">
-                    <option value="">Жанр</option>
-                    <option value="singer">Вокал</option>
-                    <option value="musician">Музика</option>
-                    <option value="painter">Живопис</option>
-                    <option value="performer">Перформанс</option>
-                </select>
+            <h2>Email</h2>
 
-                <input id="artistCity" type="text" placeholder="Місто">
-                <textarea id="artistAbout" placeholder="Короткий опис творчості"></textarea>
+            <p>
+                Напишіть лист із коротким описом проблеми, вашим ім’ям,
+                роллю на платформі та сторінкою, де виникла помилка.
+            </p>
 
-                <h2 class="account-section-title">Медіаконтент</h2>
+            <div class="support-contact-block">
+        <span id="supportEmail">
+            streetartlive.support@gmail.com
+        </span>
 
-                <input id="artistMediaFile" type="file" accept="image/*,video/*">
-                <button type="button" id="uploadArtistMediaBtn">Додати медіа</button>
+                <button
+                        type="button"
+                        class="support-copy-button"
+                        onclick="copySupportEmail()">
+                    Скопіювати
+                </button>
+            </div>
+        </article>
 
-                <div id="artistMediaGrid" class="artist-media-grid"></div>
+        <article class="support-card">
+            <div class="support-icon">↗</div>
+
+            <h2>Telegram</h2>
+
+            <p>
+                Для швидкого зв’язку можна написати розробнику в Telegram.
+                Опишіть проблему та, за можливості, додайте скріншот.
+            </p>
+
+            <a href="https://t.me/sofijaooo" target="_blank" class="support-button support-button-secondary">
+                Написати в Telegram
+            </a>
+        </article>
+
+    </section>
+
+    <section class="support-info">
+        <p class="support-label">Перед зверненням</p>
+
+        <h2>Що бажано вказати у повідомленні</h2>
+
+        <div class="support-info-list">
+            <div>
+                <span>01</span>
+                <p>Яку дію ви виконували перед появою проблеми.</p>
             </div>
 
-            <button type="submit">Зберегти зміни</button>
+            <div>
+                <span>02</span>
+                <p>Яку сторінку або розділ платформи використовували.</p>
+            </div>
 
-            <button type="button" class="access-secondary" onclick="logout()">
-                Вийти з акаунта
-            </button>
-        </form>
+            <div>
+                <span>03</span>
+                <p>Яку роль має ваш акаунт: глядач, митець або адміністратор.</p>
+            </div>
+
+            <div>
+                <span>04</span>
+                <p>Скріншот або короткий опис помилки, якщо це можливо.</p>
+            </div>
+        </div>
     </section>
+
 </main>
+<script>
+    function copySupportEmail() {
+        const email = document.getElementById("supportEmail").textContent.trim();
+
+        const tempInput = document.createElement("input");
+        tempInput.value = email;
+        document.body.appendChild(tempInput);
+
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999);
+
+        document.execCommand("copy");
+
+        document.body.removeChild(tempInput);
+
+        alert("Email скопійовано: " + email);
+    }
+</script>
 </body>
 </html>
