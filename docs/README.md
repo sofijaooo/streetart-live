@@ -124,27 +124,27 @@ Detailed documentation:
 
 ### Home Page
 
-![Home](docs/screenshots/main.png)
+![Home](screenshots/main.png)
 
 ### Interactive Map
 
-![Map](docs/screenshots/map.png)
+![Map](screenshots/map.png)
 
 ### Events Page
 
-![Events](docs/screenshots/events.png)
+![Events](screenshots/events.png)
 
 ### Artists Directory
 
-![Artists](docs/screenshots/artists.png)
+![Artists](screenshots/artists.png)
 
 ### Artist Profile
 
-![Artist Profile](docs/screenshots/artist-profile.png)
+![Artist Profile](screenshots/artist-profile.png)
 
 ### Event Moderation
 
-![Moderation](docs/screenshots/moderation.png)
+![Moderation](screenshots/moderation.png)
 
 ---
 
