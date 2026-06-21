@@ -58,7 +58,7 @@ public class NotificationService {
                 "Вітаємо!\n\n" +
                         "Митець, на якого ви підписані, має новий погоджений виступ.\n\n" +
                         "Митець: " + artist.getNickname() + "\n" +
-                        "Місце: " + event.getPlace() + "\n" +
+//                        "Місце: " + event.getPlace() + "\n" +
                         "Дата: " + event.getEventDate() + "\n" +
                         "Час: " + event.getTime() + "\n\n" +
                         "StreetArt Live"
