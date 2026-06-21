@@ -11,6 +11,8 @@ The system consists of:
 * Database layer
 * External services
 
+![Architecture Diagram](docs/architecture-diagram.png)
+
 ---
 
 ## High-Level Architecture
