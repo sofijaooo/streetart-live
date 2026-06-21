@@ -124,7 +124,7 @@ Detailed documentation:
 
 ### Home Page
 
-![Home](docs/screenshots/home.png)
+![Home](docs/screenshots/main.png)
 
 ### Interactive Map
 
@@ -144,7 +144,7 @@ Detailed documentation:
 
 ### Event Moderation
 
-![Moderation](docs/screenshots/admin-moderation.png)
+![Moderation](docs/screenshots/moderation.png)
 
 ---
 
