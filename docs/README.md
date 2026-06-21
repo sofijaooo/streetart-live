@@ -68,6 +68,8 @@ The application allows users to discover cultural events, explore artist profile
 
 StreetArt Live follows a client-server architecture.
 
+![Architecture Diagram](architecture-diagram.png)
+
 ```text
 Frontend (HTML/CSS/JavaScript)
             │
